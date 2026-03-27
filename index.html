@@ -1,0 +1,1409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Agentic Programming for Beginners | DataTrav</title>
+  <meta name="description" content="Learn to build and deploy real apps with AI agents. No coding background required. A DataTrav course using Claude + Cloudflare.">
+
+  <!-- Open Graph / Social -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://agentic-beginners.datatrav.com">
+  <meta property="og:title" content="Agentic Programming for Beginners | DataTrav">
+  <meta property="og:description" content="Learn to build and deploy real apps with AI agents. No coding background required. A DataTrav course using Claude + Cloudflare.">
+  <meta property="og:image" content="https://agentic-beginners.datatrav.com/og-image.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Agentic Programming for Beginners | DataTrav">
+  <meta name="twitter:description" content="Learn to build and deploy real apps with AI agents. No coding background required. A DataTrav course using Claude + Cloudflare.">
+  <meta name="twitter:image" content="https://agentic-beginners.datatrav.com/og-image.png">
+
+  <link rel="canonical" href="https://agentic-beginners.datatrav.com">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    /* ================================================
+       RESET & BASE
+       ================================================ */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      font-size: 16px;
+    }
+
+    body {
+      background-color: #0a0f1e;
+      color: #c8d0e0;
+      font-family: 'Inter', sans-serif;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    a { color: inherit; text-decoration: none; }
+    button { font-family: inherit; cursor: pointer; border: none; outline: none; }
+    input { font-family: inherit; }
+    ul { list-style: none; }
+
+    /* ================================================
+       CSS VARIABLES
+       ================================================ */
+    :root {
+      --bg-primary:    #0a0f1e;
+      --bg-secondary:  #0d1626;
+      --accent-teal:   #00C9A7;
+      --accent-blue:   #0077FF;
+      --gradient:      linear-gradient(135deg, #00C9A7 0%, #0077FF 100%);
+      --text-primary:  #c8d0e0;
+      --text-muted:    #6b7a99;
+      --border:        #1e2a42;
+      --radius-card:   8px;
+      --radius-btn:    6px;
+      --transition:    all 0.3s ease;
+    }
+
+    /* ================================================
+       LAYOUT
+       ================================================ */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    section { padding: 96px 0; }
+
+    /* ================================================
+       SECTION LABELS — consistent treatment throughout
+       ================================================ */
+    .section-label {
+      display: inline-block;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: var(--accent-teal);
+      border-left: 2px solid var(--accent-teal);
+      padding-left: 10px;
+      margin-bottom: 28px;
+    }
+
+    /* ================================================
+       SCROLL ANIMATIONS
+       ================================================ */
+    .fade-in {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .fade-in.visible { opacity: 1; transform: translateY(0); }
+    .fd1 { transition-delay: 0.1s; }
+    .fd2 { transition-delay: 0.2s; }
+    .fd3 { transition-delay: 0.3s; }
+    .fd4 { transition-delay: 0.4s; }
+
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      .fade-in { opacity: 1; transform: none; transition: none; }
+      .hero-bg { animation: none; }
+    }
+
+    /* ================================================
+       BUTTONS
+       ================================================ */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 14px 28px;
+      border-radius: var(--radius-btn);
+      font-size: 15px;
+      font-weight: 600;
+      transition: var(--transition);
+      cursor: pointer;
+      border: none;
+      white-space: nowrap;
+    }
+
+    .btn-gradient {
+      background: var(--gradient);
+      color: #fff;
+      box-shadow: 0 4px 20px rgba(0, 201, 167, 0.2);
+    }
+    .btn-gradient:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 32px rgba(0, 201, 167, 0.38);
+    }
+    .btn-gradient:active { transform: translateY(0); }
+
+    .btn-outline {
+      background: transparent;
+      border: 1px solid var(--accent-teal);
+      color: var(--accent-teal);
+    }
+    .btn-outline:hover {
+      background: rgba(0, 201, 167, 0.08);
+      transform: translateY(-2px);
+    }
+
+    /* ================================================
+       PHASE 1 / PHASE 2 TOGGLE
+       Phase 2 activates by adding class="launched" to <body>
+       ================================================ */
+
+    /* Hero CTAs */
+    .phase1-cta  { display: inline-flex; }
+    .phase2-cta  { display: none; }
+    .phase2-start { display: none; }
+
+    body.launched .phase1-cta   { display: none; }
+    body.launched .phase2-cta   { display: inline-flex; }
+    body.launched .phase2-start { display: inline-flex; }
+
+    /* Waitlist / Pricing swap */
+    body.launched #waitlist { display: none; }
+    #pricing { display: none; }
+    body.launched #pricing { display: block; }
+
+    /* ================================================
+       NAVIGATION
+       ================================================ */
+    .nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      padding: 16px 0;
+      background: rgba(10, 15, 30, 0.75);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border-bottom: 1px solid transparent;
+      transition: border-color 0.3s ease;
+    }
+    .nav.scrolled { border-bottom-color: var(--border); }
+
+    .nav-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .nav-logo {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 18px;
+      font-weight: 700;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      letter-spacing: -0.02em;
+    }
+
+    .logo-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--accent-teal);
+      box-shadow: 0 0 10px var(--accent-teal);
+      flex-shrink: 0;
+    }
+
+    .nav-link {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      color: var(--text-muted);
+      transition: color 0.2s ease;
+    }
+    .nav-link:hover { color: var(--accent-teal); }
+
+    /* ================================================
+       HERO
+       ================================================ */
+    #hero {
+      position: relative;
+      min-height: 90vh;
+      display: flex;
+      align-items: center;
+      padding: 120px 0 96px;
+      overflow: hidden;
+    }
+
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      background-image: radial-gradient(circle, rgba(0, 201, 167, 0.16) 1px, transparent 1px);
+      background-size: 32px 32px;
+      animation: gridDrift 28s linear infinite;
+      pointer-events: none;
+    }
+
+    .hero-glow {
+      position: absolute;
+      bottom: -60px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 800px;
+      height: 380px;
+      background: radial-gradient(ellipse at center, rgba(0, 201, 167, 0.1) 0%, transparent 68%);
+      pointer-events: none;
+    }
+
+    @keyframes gridDrift {
+      0%   { background-position: 0 0; }
+      100% { background-position: 32px 32px; }
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 1;
+      max-width: 780px;
+    }
+
+    .hero-chip {
+      display: inline-block;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--accent-teal);
+      background: rgba(0, 201, 167, 0.08);
+      border: 1px solid rgba(0, 201, 167, 0.28);
+      border-radius: 100px;
+      padding: 6px 16px;
+      margin-bottom: 28px;
+    }
+
+    .hero-headline {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: clamp(38px, 5.5vw, 62px);
+      font-weight: 700;
+      line-height: 1.12;
+      color: #fff;
+      margin-bottom: 22px;
+      letter-spacing: -0.02em;
+    }
+
+    .hero-sub {
+      font-size: 20px;
+      font-weight: 400;
+      color: var(--text-muted);
+      max-width: 600px;
+      margin-bottom: 14px;
+      line-height: 1.65;
+    }
+
+    .hero-support {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--accent-teal);
+      margin-bottom: 36px;
+    }
+
+    .hero-cta-row {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+      margin-bottom: 24px;
+    }
+
+    .hero-proof {
+      font-size: 14px;
+      color: var(--text-muted);
+      font-style: italic;
+    }
+
+    /* ================================================
+       CURRICULUM
+       ================================================ */
+    #curriculum { background: var(--bg-secondary); }
+
+    .curriculum-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-top: 8px;
+    }
+
+    .module-card {
+      position: relative;
+      background: var(--bg-primary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-card);
+      padding: 24px 22px;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      overflow: hidden;
+    }
+
+    /* Gradient border on hover via mask technique */
+    .module-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: var(--radius-card);
+      padding: 1px;
+      background: var(--gradient);
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    .module-card:hover::before { opacity: 1; }
+    .module-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.45);
+    }
+
+    .module-number {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--accent-teal);
+      letter-spacing: 0.08em;
+      margin-bottom: 10px;
+    }
+
+    .module-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 8px;
+      line-height: 1.45;
+    }
+
+    .module-desc {
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.65;
+    }
+
+    /* ================================================
+       WHO THIS IS FOR
+       ================================================ */
+    .who-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      margin-top: 8px;
+    }
+
+    .who-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-card);
+      padding: 32px 28px;
+      transition: var(--transition);
+    }
+    .who-card:hover {
+      border-color: rgba(0, 201, 167, 0.28);
+      box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
+    }
+
+    .who-icon  { font-size: 30px; margin-bottom: 16px; }
+    .who-title { font-size: 17px; font-weight: 700; color: #fff; margin-bottom: 10px; }
+    .who-desc  { font-size: 14px; color: var(--text-muted); line-height: 1.7; }
+
+    /* ================================================
+       WHAT YOU'LL BUILD
+       ================================================ */
+    #what-you-build { background: var(--bg-secondary); }
+
+    .build-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 24px 48px;
+      margin-top: 8px;
+    }
+
+    .build-item {
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+    }
+
+    .build-check {
+      flex-shrink: 0;
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      background: rgba(0, 201, 167, 0.08);
+      border: 1px solid var(--accent-teal);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 1px;
+      color: var(--accent-teal);
+    }
+    .build-check svg { width: 13px; height: 13px; }
+
+    .build-title { font-size: 15px; font-weight: 700; color: #fff; margin-bottom: 4px; }
+    .build-sub   { font-size: 13px; color: var(--text-muted); line-height: 1.65; }
+
+    /* ================================================
+       WAITLIST (Phase 1)
+       ================================================ */
+    #waitlist { background: var(--bg-primary); }
+
+    .waitlist-headline {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: clamp(28px, 4vw, 44px);
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 14px;
+    }
+
+    .waitlist-sub {
+      font-size: 17px;
+      color: var(--text-muted);
+      max-width: 520px;
+      line-height: 1.7;
+      margin-bottom: 36px;
+    }
+
+    .waitlist-form {
+      display: flex;
+      gap: 12px;
+      max-width: 500px;
+      flex-wrap: wrap;
+    }
+
+    .waitlist-input {
+      flex: 1;
+      min-width: 240px;
+      padding: 14px 18px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-btn);
+      color: var(--text-primary);
+      font-size: 15px;
+      outline: none;
+      transition: border-color 0.2s ease;
+    }
+    .waitlist-input:focus { border-color: var(--accent-teal); }
+    .waitlist-input::placeholder { color: var(--text-muted); }
+
+    .waitlist-note {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-top: 14px;
+    }
+
+    #waitlistSuccess {
+      display: none;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 18px;
+      color: var(--accent-teal);
+      padding: 24px 0;
+    }
+
+    /* ================================================
+       PRICING — Phase 2 (hidden by default)
+       ================================================ */
+    #pricing { background: var(--bg-secondary); }
+
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      align-items: start;
+      margin-top: 48px;
+    }
+
+    .pricing-card {
+      background: var(--bg-primary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-card);
+      padding: 36px 28px;
+      transition: var(--transition);
+    }
+    .pricing-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 40px rgba(0,0,0,0.4);
+    }
+
+    .pricing-card.featured {
+      position: relative;
+      border-color: transparent;
+    }
+    .pricing-card.featured::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: var(--radius-card);
+      padding: 1px;
+      background: var(--gradient);
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+    }
+
+    .pricing-badge {
+      display: inline-block;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      background: var(--gradient);
+      color: #fff;
+      border-radius: 100px;
+      padding: 4px 12px;
+      margin-bottom: 18px;
+    }
+
+    .pricing-tier {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--accent-teal);
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      margin-bottom: 8px;
+    }
+
+    .pricing-price {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 44px;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 4px;
+      line-height: 1;
+    }
+
+    .pricing-period {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-bottom: 28px;
+    }
+
+    .pricing-features { margin-bottom: 28px; }
+    .pricing-features li {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      font-size: 14px;
+      color: var(--text-primary);
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .pricing-features li:first-child { border-top: 1px solid var(--border); }
+    .pricing-features li::before {
+      content: '✓';
+      color: var(--accent-teal);
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .pricing-btn {
+      display: block;
+      width: 100%;
+      text-align: center;
+      justify-content: center;
+    }
+
+    .pricing-note {
+      text-align: center;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-top: 28px;
+    }
+
+    /* ================================================
+       ABOUT DATATRAV
+       ================================================ */
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 72px;
+      align-items: center;
+      margin-top: 8px;
+    }
+
+    .about-headline {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: clamp(24px, 3vw, 34px);
+      font-weight: 700;
+      color: #fff;
+      line-height: 1.2;
+      margin-bottom: 28px;
+    }
+
+    .about-text p {
+      font-size: 15px;
+      color: var(--text-muted);
+      line-height: 1.85;
+      margin-bottom: 16px;
+    }
+    .about-text p:last-child {
+      color: var(--text-primary);
+      font-weight: 500;
+      margin-bottom: 0;
+    }
+
+    /* Terminal block */
+    .terminal-block {
+      background: #060a14;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 16px 56px rgba(0, 0, 0, 0.55);
+    }
+
+    .terminal-header {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      padding: 12px 16px;
+      background: #0d1626;
+      border-bottom: 1px solid var(--border);
+    }
+    .t-dot { width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0; }
+    .t-dot.red    { background: #FF5F57; }
+    .t-dot.yellow { background: #FFBD2E; }
+    .t-dot.green  { background: #28C840; }
+    .t-filename {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-left: 8px;
+    }
+
+    .terminal-body {
+      padding: 20px 24px;
+      overflow-x: auto;
+    }
+
+    .terminal-body pre {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12.5px;
+      line-height: 1.9;
+      white-space: pre;
+      margin: 0;
+    }
+
+    .tc  { color: #3d4f6b; }   /* comment */
+    .th  { color: #00C9A7; }   /* heading */
+    .tk  { color: #63b3ed; }   /* key */
+    .tv  { color: #a0aec0; }   /* value */
+    .ts  { color: #68d391; }   /* string */
+
+    /* ================================================
+       FAQ — CSS-only accordion (checkbox hack)
+       ================================================ */
+    #faq { background: var(--bg-secondary); }
+
+    .faq-list {
+      max-width: 720px;
+      margin: 8px 0 0;
+    }
+
+    .faq-item { border-bottom: 1px solid var(--border); }
+    .faq-item:first-of-type { border-top: 1px solid var(--border); }
+
+    .faq-toggle { display: none; }
+
+    .faq-question {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      padding: 22px 0;
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--text-primary);
+      cursor: pointer;
+      user-select: none;
+      transition: color 0.2s ease;
+    }
+    .faq-question:hover { color: #fff; }
+
+    .faq-question::after {
+      content: '+';
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 22px;
+      font-weight: 400;
+      color: var(--accent-teal);
+      flex-shrink: 0;
+      transition: transform 0.3s ease;
+      line-height: 1;
+    }
+
+    .faq-toggle:checked ~ .faq-question { color: #fff; }
+    .faq-toggle:checked ~ .faq-question::after {
+      content: '−';
+    }
+
+    .faq-answer {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.4s ease;
+    }
+    .faq-toggle:checked ~ .faq-answer { max-height: 320px; }
+
+    .faq-answer p {
+      font-size: 15px;
+      color: var(--text-muted);
+      line-height: 1.8;
+      padding-bottom: 24px;
+    }
+
+    /* ================================================
+       FOOTER
+       ================================================ */
+    footer {
+      background: #060a14;
+      border-top: 1px solid var(--border);
+      padding: 52px 0;
+    }
+
+    .footer-inner {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 20px;
+    }
+
+    .footer-logo {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 20px;
+      font-weight: 700;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 28px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .footer-links a {
+      font-size: 13px;
+      color: var(--text-muted);
+      transition: color 0.2s ease;
+    }
+    .footer-links a:hover { color: var(--accent-teal); }
+
+    .footer-copy { font-size: 13px; color: var(--text-muted); }
+    .footer-tagline {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: #2e3f5c;
+    }
+
+    /* ================================================
+       SHARED SECTION HEADLINE / SUB
+       ================================================ */
+    .section-headline {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: clamp(26px, 3.2vw, 36px);
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 12px;
+      line-height: 1.2;
+    }
+
+    .section-sub {
+      font-size: 16px;
+      color: var(--text-muted);
+      max-width: 560px;
+      line-height: 1.75;
+      margin-bottom: 48px;
+    }
+
+    /* ================================================
+       RESPONSIVE — 1024px
+       ================================================ */
+    @media (max-width: 1024px) {
+      .curriculum-grid { grid-template-columns: repeat(2, 1fr); }
+      .about-grid { grid-template-columns: 1fr; gap: 48px; }
+    }
+
+    /* ================================================
+       RESPONSIVE — 768px
+       ================================================ */
+    @media (max-width: 768px) {
+      section { padding: 64px 0; }
+
+      .curriculum-grid { grid-template-columns: 1fr; }
+      .who-grid         { grid-template-columns: 1fr; gap: 16px; }
+      .build-grid       { grid-template-columns: 1fr; }
+      .pricing-grid     { grid-template-columns: 1fr; }
+
+      .hero-cta-row     { flex-direction: column; align-items: flex-start; }
+      .btn              { width: 100%; justify-content: center; }
+    }
+
+    @media (max-width: 480px) {
+      .container { padding: 0 16px; }
+      .waitlist-form { flex-direction: column; }
+      .waitlist-input { width: 100%; min-width: unset; }
+    }
+
+  </style>
+</head>
+<body>
+
+  <!-- ============================================================
+       1. NAVIGATION
+       ============================================================ -->
+  <nav class="nav" id="mainNav" aria-label="Main navigation">
+    <div class="container nav-inner">
+      <div class="nav-logo" aria-label="DataTrav">
+        DataTrav
+        <span class="logo-dot" aria-hidden="true"></span>
+      </div>
+      <a href="https://datatrav.com" class="nav-link" target="_blank" rel="noopener noreferrer">datatrav.com</a>
+    </div>
+  </nav>
+
+  <main>
+
+    <!-- ============================================================
+         2. HERO
+         ============================================================ -->
+    <section id="hero" aria-labelledby="hero-heading">
+      <div class="hero-bg" aria-hidden="true"></div>
+      <div class="hero-glow" aria-hidden="true"></div>
+      <div class="container">
+        <div class="hero-content">
+
+          <div class="hero-chip fade-in">New Course from DataTrav</div>
+
+          <h1 id="hero-heading" class="hero-headline fade-in fd1">
+            Build Real Apps<br>with AI Agents.
+          </h1>
+
+          <p class="hero-sub fade-in fd2">
+            No coding background required. Just the ability to communicate clearly —
+            and the workflow to back it up.
+          </p>
+
+          <p class="hero-support fade-in fd2">→ From idea to live deployed URL. Using Claude + Cloudflare.</p>
+
+          <div class="hero-cta-row fade-in fd3">
+            <!-- Phase 1 CTA -->
+            <a href="#waitlist" class="btn btn-gradient phase1-cta">Join the Early Access List →</a>
+            <!-- Phase 2 CTAs (shown when body has class="launched") -->
+            <a href="#pricing" class="btn btn-gradient phase2-cta">Enroll Now →</a>
+            <a href="#" class="btn btn-outline phase2-start">Start Learning →</a>
+          </div>
+
+          <p class="hero-proof fade-in fd4">
+            Built for founders, operators, and small teams who want to build — not just chat.
+          </p>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         3. CURRICULUM
+         ============================================================ -->
+    <section id="curriculum" aria-labelledby="curriculum-heading">
+      <div class="container">
+
+        <div class="fade-in">
+          <span class="section-label">The Curriculum</span>
+          <h2 id="curriculum-heading" class="section-headline">8 modules. Zero fluff.</h2>
+          <p class="section-sub">Each module builds on the last — from mindset to deployment to capstone.</p>
+        </div>
+
+        <div class="curriculum-grid">
+
+          <div class="module-card fade-in">
+            <div class="module-number">M1 —</div>
+            <div class="module-title">The Agentic Mindset</div>
+            <p class="module-desc">Understand what agents actually do and how to think like a director.</p>
+          </div>
+
+          <div class="module-card fade-in fd1">
+            <div class="module-number">M2 —</div>
+            <div class="module-title">Setting Up Your Workspace</div>
+            <p class="module-desc">GitHub, Claude Code, Cloudflare, and your reusable project scaffold.</p>
+          </div>
+
+          <div class="module-card fade-in fd2">
+            <div class="module-number">M3 —</div>
+            <div class="module-title">Your First Conversation with an Agent</div>
+            <p class="module-desc">Context, direction, and how to read what your agent builds.</p>
+          </div>
+
+          <div class="module-card fade-in fd3">
+            <div class="module-number">M4 —</div>
+            <div class="module-title">From Idea to Prompt</div>
+            <p class="module-desc">The four-component framework that makes every prompt land.</p>
+          </div>
+
+          <div class="module-card fade-in">
+            <div class="module-number">M5 —</div>
+            <div class="module-title">Long-Running Prompts &amp; Multi-Step Thinking</div>
+            <p class="module-desc">Managing complex builds across sessions without losing your place.</p>
+          </div>
+
+          <div class="module-card fade-in fd1">
+            <div class="module-number">M6 —</div>
+            <div class="module-title">Building &amp; Deploying Your First App</div>
+            <p class="module-desc">Prompt → build → deploy → live URL. The full loop in one module.</p>
+          </div>
+
+          <div class="module-card fade-in fd2">
+            <div class="module-number">M7 —</div>
+            <div class="module-title">Testing Deployments with Agents</div>
+            <p class="module-desc">Use the agent to validate, debug, and harden what you shipped.</p>
+          </div>
+
+          <div class="module-card fade-in fd3">
+            <div class="module-number">M8 —</div>
+            <div class="module-title">End-to-End Capstone: Idea to Live URL</div>
+            <p class="module-desc">One session. One idea. One live app. The bar trick, for real.</p>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         4. WHO THIS IS FOR
+         ============================================================ -->
+    <section id="who" aria-labelledby="who-heading">
+      <div class="container">
+
+        <div class="fade-in">
+          <span class="section-label">Is This for You?</span>
+          <h2 id="who-heading" class="section-headline">Built for builders, not just browsers.</h2>
+        </div>
+
+        <div class="who-grid">
+
+          <div class="who-card fade-in">
+            <div class="who-icon" aria-hidden="true">🧑‍💼</div>
+            <h3 class="who-title">Solo Founders &amp; Operators</h3>
+            <p class="who-desc">You want to ship tools and automations without hiring a dev team.</p>
+          </div>
+
+          <div class="who-card fade-in fd1">
+            <div class="who-icon" aria-hidden="true">📈</div>
+            <h3 class="who-title">Small Business Builders</h3>
+            <p class="who-desc">You're already using AI — now you want to actually build with it.</p>
+          </div>
+
+          <div class="who-card fade-in fd2">
+            <div class="who-icon" aria-hidden="true">⚡</div>
+            <h3 class="who-title">Curious Non-Developers</h3>
+            <p class="who-desc">You've been watching AI and thinking: I want to do that. This is your in.</p>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         5. WHAT YOU'LL BUILD
+         ============================================================ -->
+    <section id="what-you-build" aria-labelledby="build-heading">
+      <div class="container">
+
+        <div class="fade-in">
+          <span class="section-label">What You Walk Away With</span>
+          <h2 id="build-heading" class="section-headline">You ship. You keep it.</h2>
+          <p class="section-sub">Every deliverable is real. Every output is yours.</p>
+        </div>
+
+        <div class="build-grid">
+
+          <div class="build-item fade-in">
+            <div class="build-check" aria-hidden="true">
+              <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="2,7 5.5,11 12,3"/></svg>
+            </div>
+            <div>
+              <div class="build-title">A live deployed web app</div>
+              <div class="build-sub">Built and shipped in Module 6. Real URL. Shareable.</div>
+            </div>
+          </div>
+
+          <div class="build-item fade-in fd1">
+            <div class="build-check" aria-hidden="true">
+              <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="2,7 5.5,11 12,3"/></svg>
+            </div>
+            <div>
+              <div class="build-title">A reusable project scaffold</div>
+              <div class="build-sub">A folder structure and CLAUDE.md pattern you'll use on every future build.</div>
+            </div>
+          </div>
+
+          <div class="build-item fade-in">
+            <div class="build-check" aria-hidden="true">
+              <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="2,7 5.5,11 12,3"/></svg>
+            </div>
+            <div>
+              <div class="build-title">A personal prompt library</div>
+              <div class="build-sub">Saved, tested prompts that work — ready to reuse.</div>
+            </div>
+          </div>
+
+          <div class="build-item fade-in fd1">
+            <div class="build-check" aria-hidden="true">
+              <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="2,7 5.5,11 12,3"/></svg>
+            </div>
+            <div>
+              <div class="build-title">A testing and debugging workflow</div>
+              <div class="build-sub">So you can validate agent-built code like a pro.</div>
+            </div>
+          </div>
+
+          <div class="build-item fade-in">
+            <div class="build-check" aria-hidden="true">
+              <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="2,7 5.5,11 12,3"/></svg>
+            </div>
+            <div>
+              <div class="build-title">A full capstone project</div>
+              <div class="build-sub">One idea → one session → one live URL. The Bar Trick, on record.</div>
+            </div>
+          </div>
+
+          <div class="build-item fade-in fd1">
+            <div class="build-check" aria-hidden="true">
+              <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="2,7 5.5,11 12,3"/></svg>
+            </div>
+            <div>
+              <div class="build-title">The agentic workflow</div>
+              <div class="build-sub">Idea → Prompt → Build → Review → Deploy → Iterate. Internalized.</div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         6. WAITLIST SIGNUP (Phase 1)
+         ============================================================ -->
+    <section id="waitlist" aria-labelledby="waitlist-heading">
+      <div class="container">
+
+        <span class="section-label fade-in">Get Early Access</span>
+        <h2 id="waitlist-heading" class="waitlist-headline fade-in fd1">Be first in the door.</h2>
+        <p class="waitlist-sub fade-in fd2">
+          Drop your email and I'll reach out the moment enrollment opens —
+          along with any early access pricing.
+        </p>
+
+        <div id="waitlistFormWrap" class="fade-in fd2">
+          <form
+            id="waitlistForm"
+            class="waitlist-form"
+            action="https://formspree.io/f/REPLACE_WITH_YOUR_ID"
+            method="POST"
+            novalidate
+          >
+            <input
+              type="email"
+              name="email"
+              class="waitlist-input"
+              placeholder="your@email.com"
+              required
+              autocomplete="email"
+              aria-label="Email address"
+            >
+            <button type="submit" class="btn btn-gradient">Notify Me</button>
+          </form>
+          <p class="waitlist-note">No spam. Just the launch notice and early pricing.</p>
+        </div>
+
+        <div id="waitlistSuccess" aria-live="polite">
+          You're on the list. 🤙 I'll be in touch.
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ============================================================
+         7. PRICING — Phase 2 (hidden by default, shown with body.launched)
+         ============================================================ -->
+    <section id="pricing" aria-labelledby="pricing-heading">
+      <div class="container">
+
+        <div class="fade-in">
+          <span class="section-label">Enrollment</span>
+          <h2 id="pricing-heading" class="section-headline">Pick your path.</h2>
+          <p class="section-sub">Everything you need to start building with AI agents.</p>
+        </div>
+
+        <div class="pricing-grid fade-in">
+
+          <!-- Starter -->
+          <div class="pricing-card">
+            <div class="pricing-tier">Starter</div>
+            <div class="pricing-price">$XX</div>
+            <div class="pricing-period">one-time payment</div>
+            <ul class="pricing-features">
+              <li>All 8 core modules</li>
+              <li>Project scaffold template</li>
+              <li>Prompt library starter pack</li>
+              <li>Lifetime access</li>
+            </ul>
+            <a href="#" class="btn btn-gradient pricing-btn">Enroll — Starter</a>
+          </div>
+
+          <!-- Core (featured) -->
+          <div class="pricing-card featured">
+            <div class="pricing-badge">Most Popular</div>
+            <div class="pricing-tier">Core</div>
+            <div class="pricing-price">$XX</div>
+            <div class="pricing-period">one-time payment</div>
+            <ul class="pricing-features">
+              <li>Everything in Starter</li>
+              <li>Full capstone walkthrough</li>
+              <li>Testing &amp; debugging guide</li>
+              <li>Community access (at launch)</li>
+              <li>Lifetime access</li>
+            </ul>
+            <a href="#" class="btn btn-gradient pricing-btn">Enroll — Core</a>
+          </div>
+
+          <!-- Pro -->
+          <div class="pricing-card">
+            <div class="pricing-tier">Pro</div>
+            <div class="pricing-price">$XX</div>
+            <div class="pricing-period">one-time payment</div>
+            <ul class="pricing-features">
+              <li>Everything in Core</li>
+              <li>1-on-1 office hours session</li>
+              <li>Priority support</li>
+              <li>Advanced patterns module</li>
+              <li>Lifetime access</li>
+            </ul>
+            <a href="#" class="btn btn-gradient pricing-btn">Enroll — Pro</a>
+          </div>
+
+        </div>
+
+        <p class="pricing-note fade-in">Lifetime access. No subscription.</p>
+
+      </div>
+    </section>
+
+    <!-- ============================================================
+         8. ABOUT DATATRAV
+         ============================================================ -->
+    <section id="about" aria-labelledby="about-heading">
+      <div class="container">
+
+        <span class="section-label fade-in">Built by DataTrav</span>
+
+        <div class="about-grid">
+
+          <div class="about-text fade-in">
+            <h2 id="about-heading" class="about-headline">Not theory.<br>This is how I work.</h2>
+            <p>DataTrav is a Nashville-based technology consultancy that builds custom automation systems, AI tools, and data pipelines for small businesses.</p>
+            <p>This course is how I work — documented, sequenced, and taught from scratch. Every workflow, every prompt pattern, every deploy step is something I use in real client projects.</p>
+            <p>If you want to build the way I build, this is the course.</p>
+          </div>
+
+          <div class="fade-in fd1">
+            <div class="terminal-block" aria-label="Sample CLAUDE.md file">
+              <div class="terminal-header" aria-hidden="true">
+                <span class="t-dot red"></span>
+                <span class="t-dot yellow"></span>
+                <span class="t-dot green"></span>
+                <span class="t-filename">CLAUDE.md</span>
+              </div>
+              <div class="terminal-body">
+<pre><span class="tc"># ──────────────────────────────────</span>
+<span class="th"># Project Context</span>
+<span class="tc"># ──────────────────────────────────</span>
+<span class="tv">You are building a client dashboard
+for a Nashville-based logistics co.</span>
+
+<span class="th">## Stack</span>
+<span class="tk">- Frontend:</span> <span class="ts">Cloudflare Pages</span>
+<span class="tk">- Backend: </span> <span class="ts">AWS Lambda + DynamoDB</span>
+<span class="tk">- Auth:    </span> <span class="ts">OAuth 2.0 (Azure AD)</span>
+
+<span class="th">## Rules</span>
+<span class="tv">- Never modify schema without asking
+- Always validate before deploying
+- Prefer simple solutions over clever</span>
+
+<span class="th">## Current Task</span>
+<span class="ts">Build invoice export feature.
+Target: CSV + PDF, by date range.</span></pre>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         9. FAQ
+         ============================================================ -->
+    <section id="faq" aria-labelledby="faq-heading">
+      <div class="container">
+
+        <div class="fade-in">
+          <span class="section-label">FAQ</span>
+          <h2 id="faq-heading" class="section-headline">Common questions.</h2>
+        </div>
+
+        <div class="faq-list fade-in">
+
+          <div class="faq-item">
+            <input type="checkbox" id="faq1" class="faq-toggle">
+            <label for="faq1" class="faq-question">Do I need to know how to code?</label>
+            <div class="faq-answer">
+              <p>No. This course is built for people who can communicate clearly, not people who can already code. You'll learn to direct an AI agent to write the code for you.</p>
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <input type="checkbox" id="faq2" class="faq-toggle">
+            <label for="faq2" class="faq-question">What tools do I need?</label>
+            <div class="faq-answer">
+              <p>A GitHub account (free), a Cloudflare account (free tier works), an Anthropic API key, and VS Code. Total cost to get started: the price of API usage, which is minimal for learning projects.</p>
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <input type="checkbox" id="faq3" class="faq-toggle">
+            <label for="faq3" class="faq-question">How long does the course take?</label>
+            <div class="faq-answer">
+              <p>The 8 core modules are designed to be worked through in a weekend if you go focused, or over 2–3 weeks at a casual pace. The optional modules are reference material you return to as needed.</p>
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <input type="checkbox" id="faq4" class="faq-toggle">
+            <label for="faq4" class="faq-question">Will I actually build something live?</label>
+            <div class="faq-answer">
+              <p>Yes. Module 6 ends with a deployed app at a real URL. Module 8 ends with a full capstone build from scratch. You ship twice.</p>
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <input type="checkbox" id="faq5" class="faq-toggle">
+            <label for="faq5" class="faq-question">Is there a community or support?</label>
+            <div class="faq-answer">
+              <p>Details coming at launch. Early access members will be first to know.</p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ============================================================
+       10. FOOTER
+       ============================================================ -->
+  <footer>
+    <div class="container footer-inner">
+
+      <div class="footer-logo" aria-label="DataTrav">
+        DataTrav
+        <span class="logo-dot" aria-hidden="true"></span>
+      </div>
+
+      <nav class="footer-links" aria-label="Footer links">
+        <a href="https://datatrav.com" target="_blank" rel="noopener noreferrer">datatrav.com</a>
+        <a href="#">Privacy</a>
+        <a href="#">Contact</a>
+      </nav>
+
+      <p class="footer-copy">© 2025 Moore Data Collective LLC d/b/a DataTrav. Nashville, TN.</p>
+      <p class="footer-tagline">Agentic Programming for Beginners is a DataTrav course.</p>
+
+    </div>
+  </footer>
+
+  <!-- ============================================================
+       JAVASCRIPT
+       ============================================================ -->
+  <script>
+    // ── Scroll animations via IntersectionObserver ──────────────
+    (function () {
+      var prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      var elements = document.querySelectorAll('.fade-in');
+
+      if (prefersReduced) {
+        elements.forEach(function (el) { el.classList.add('visible'); });
+        return;
+      }
+
+      var observer = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+            observer.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+
+      elements.forEach(function (el) { observer.observe(el); });
+    }());
+
+    // ── Nav scroll effect ────────────────────────────────────────
+    (function () {
+      var nav = document.getElementById('mainNav');
+      window.addEventListener('scroll', function () {
+        nav.classList.toggle('scrolled', window.scrollY > 24);
+      }, { passive: true });
+    }());
+
+    // ── Waitlist form — Formspree fetch (no page reload) ─────────
+    (function () {
+      var form    = document.getElementById('waitlistForm');
+      var wrap    = document.getElementById('waitlistFormWrap');
+      var success = document.getElementById('waitlistSuccess');
+
+      if (!form) return;
+
+      form.addEventListener('submit', function (e) {
+        e.preventDefault();
+
+        var btn = form.querySelector('button[type="submit"]');
+        btn.textContent = 'Sending…';
+        btn.disabled    = true;
+
+        fetch(form.action, {
+          method:  'POST',
+          body:    new FormData(form),
+          headers: { 'Accept': 'application/json' }
+        })
+        .then(function (res) {
+          if (res.ok) {
+            wrap.style.display    = 'none';
+            success.style.display = 'block';
+          } else {
+            btn.textContent = 'Try again';
+            btn.disabled    = false;
+          }
+        })
+        .catch(function () {
+          btn.textContent = 'Try again';
+          btn.disabled    = false;
+        });
+      });
+    }());
+  </script>
+
+</body>
+</html>
